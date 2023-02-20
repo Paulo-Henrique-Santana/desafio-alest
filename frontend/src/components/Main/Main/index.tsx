@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import ListProducts from "../ListProducts";
 import NewProduct from "../NewProduct";
 import UpdateProduct from "../UpdateProduct";
@@ -20,8 +20,8 @@ const Main = () => {
     setProducts(json);
   };
 
-  const searchProduct = (event: FormEvent) => {
-    event.preventDefault();
+  const searchProduct = (event?: FormEvent) => {
+    if (event) event.preventDefault();
 
     if (products) {
       setFilteredProducts(
@@ -31,6 +31,10 @@ const Main = () => {
       );
     }
   };
+
+  useEffect(() => {
+    searchProduct();
+  }, [products]);
 
   return (
     <S.Main>
@@ -52,14 +56,15 @@ const Main = () => {
         <ListProducts
           fetchProducts={fetchProducts}
           setProducts={setProducts}
-          products={!filteredProducts ? products : filteredProducts}
+          products={filteredProducts}
           setUpdateModal={setUpdateModal}
           setProductToUpdate={setProductToUpdate}
         />
         <NewProduct
           active={newProductModal}
           setActive={setNewProductModal}
-          fetchProducts={fetchProducts}
+          products={products}
+          setProducts={setProducts}
         />
         <UpdateProduct
           productToUpdate={productToUpdate}

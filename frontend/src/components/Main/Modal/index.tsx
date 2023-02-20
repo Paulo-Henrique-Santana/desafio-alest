@@ -35,10 +35,7 @@ const Modal = ({
 
     if (target.id === "price") value = value.replace(/[^\d,.]*/g, "");
 
-    setFields({
-      ...fields,
-      [target.id]: value,
-    });
+    setFields({ ...fields, [target.id]: value });
   };
 
   return (
@@ -47,7 +44,7 @@ const Modal = ({
         <S.Titulo>{title}</S.Titulo>
         <S.Form onSubmit={handleSubmit}>
           <S.FieldBox>
-            <S.Label htmlFor="">Nome</S.Label>
+            <S.Label htmlFor="name">Nome</S.Label>
             <S.Input
               id="name"
               value={fields.name}
@@ -58,7 +55,7 @@ const Modal = ({
             />
           </S.FieldBox>
           <S.FieldBox>
-            <S.Label htmlFor="">Preco</S.Label>
+            <S.Label htmlFor="price">Preco</S.Label>
             <S.Input
               id="price"
               value={fields.price}
@@ -69,7 +66,7 @@ const Modal = ({
             />
           </S.FieldBox>
           <S.FieldBox>
-            <S.Label htmlFor="">Imagem</S.Label>
+            <S.Label htmlFor="image">Imagem</S.Label>
             <S.Input
               id="image"
               value={fields.image}

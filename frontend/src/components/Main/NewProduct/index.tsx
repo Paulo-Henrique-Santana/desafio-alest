@@ -1,13 +1,20 @@
-import { FormEvent, useState } from "react";
+import {
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import Modal from "../Modal";
 
 interface Props {
   active: boolean;
-  setActive: React.Dispatch<React.SetStateAction<boolean>>;
-  fetchProducts(): Promise<void>;
+  setActive: Dispatch<SetStateAction<boolean>>;
+  products: Product[] | null;
+  setProducts: Dispatch<SetStateAction<Product[] | null>>;
 }
 
-const NewProduct = ({ active, setActive, fetchProducts }: Props) => {
+const NewProduct = ({ active, setActive, products, setProducts }: Props) => {
   const [fields, setFields] = useState<ProductFields>({
     name: "",
     price: "",
@@ -30,11 +37,16 @@ const NewProduct = ({ active, setActive, fetchProducts }: Props) => {
       body: JSON.stringify(product),
     });
 
-    if (res.status === 200) {
+    if (res.status === 200 && products) {
+      const newProduct = await res.json();
+      setProducts([...products, newProduct]);
       setActive(false);
-      fetchProducts();
     }
   };
+
+  useEffect(() => {
+    if (!active) setFields({ name: "", price: "", image: "" });
+  }, [active]);
 
   return (
     <Modal

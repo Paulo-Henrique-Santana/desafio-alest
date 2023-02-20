@@ -27,26 +27,28 @@ app.use(
 );
 app.use(bodyParser.json());
 
-const db = admin.firestore().collection("products");
+const productsDb = admin.firestore().collection("products");
 
 app.get("/products", async (req, res) => {
-  const query = await db.get();
-  const retorno = query.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-  res.status(200).json(retorno);
+  const query = await productsDb.get();
+  const products = query.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  res.status(200).json(products);
 });
 
 app.post("/products/delete", (req, res) => {
-  db.doc(`${req.body.id}`).delete();
+  productsDb.doc(`${req.body.id}`).delete();
   res.status(200).json();
 });
 
-app.post("/products/insert", (req, res) => {
-  db.add(req.body);
-  res.status(200).json();
+app.post("/products/insert", async (req, res) => {
+  const doc = await productsDb.add(req.body);
+  const query = await doc.get();
+  const product = query.data();
+  res.status(200).json({ ...product, id: query.id });
 });
 
 app.post("/products/update", (req, res) => {
-  db.doc(req.body.id).update({ ...req.body.changedProduct });
+  productsDb.doc(req.body.id).update({ ...req.body.changedProduct });
   res.status(200).json();
 });
 
